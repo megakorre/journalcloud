@@ -182,7 +182,6 @@ fn create_or_find_log_stream(
 }
 
 fn main() {
-    let _ = env_logger::init();
     let config = read_config();
     let mut runtime = init_runtime(config);
     loop {
