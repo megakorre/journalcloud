@@ -167,18 +167,16 @@ fn create_or_find_log_stream(
         }
     );
     match response.unwrap().log_streams {
-        Some(streams) => {
-            if streams.len() > 0 {
-                return streams[0].upload_sequence_token.clone();
-            }
-        },
-        None => {}
+        Some(ref streams) if streams.len() > 0 =>
+            streams[0].upload_sequence_token.clone(),
+        _ => {
+            logs_client.create_log_stream(&rusoto_logs::CreateLogStreamRequest {
+                log_group_name: config.log_group_name.clone(),
+                log_stream_name: config.log_stream_name.clone(),
+            }).unwrap();
+            None
+        }
     }
-    logs_client.create_log_stream(&rusoto_logs::CreateLogStreamRequest {
-        log_group_name: config.log_group_name.clone(),
-        log_stream_name: config.log_stream_name.clone(),
-    }).unwrap();
-    return None;
 }
 
 fn main() {
